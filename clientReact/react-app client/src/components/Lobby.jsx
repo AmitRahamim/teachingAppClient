@@ -7,7 +7,7 @@ import '../App.css';
 const Lobby = () => {
   const [codeBlocks, setCodeBlocks] = useState([]);
 
-  const serverUrl = process.env.SERVER_URL || 'http://localhost:5001';
+  const serverUrl = 'teachingappserver-production-c351.up.railway.app';
 
   useEffect(() => {
     axios.get(`${serverUrl}/api/codeblocks`)
