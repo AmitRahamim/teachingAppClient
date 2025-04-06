@@ -23,7 +23,9 @@ const CodeBlock = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState('');
 
-  const serverUrl = 'teachingappserver-production-c351.up.railway.app';
+  // Use the full URL including the protocol
+  const serverUrl = 'https://teachingappserver-production-c351.up.railway.app';
+
   // Fetch code block details (including the solution)
   useEffect(() => {
     axios.get(`${serverUrl}/api/codeblocks/${id}`)
@@ -33,11 +35,11 @@ const CodeBlock = () => {
         setSolution(solution);
       })
       .catch(err => console.error(err));
-  }, [id]);
+  }, [id, serverUrl]);
 
   // Set up socket connection and event listeners
   useEffect(() => {
-    socketRef.current = io(`${serverUrl}`);
+    socketRef.current = io(serverUrl);
     socketRef.current.emit('joinRoom', { roomId: id });
 
     socketRef.current.on('roleAssigned', ({ role, userName }) => {
@@ -46,7 +48,12 @@ const CodeBlock = () => {
 
     socketRef.current.on('updateCode', ({ code: newCode }) => {
       setCode(newCode);
-      setShowSmiley(newCode.trim() === solution.trim());
+      // Only check if both newCode and solution are defined
+      if (newCode && solution) {
+        setShowSmiley(newCode.trim() === solution.trim());
+      } else {
+        setShowSmiley(false);
+      }
     });
 
     socketRef.current.on('studentCount', ({ count }) => {
@@ -66,14 +73,18 @@ const CodeBlock = () => {
     return () => {
       socketRef.current.disconnect();
     };
-  }, [id, navigate, solution]);
+  }, [id, navigate, solution, serverUrl]);
 
   // Handle code changes (students only)
   const handleCodeChange = (editor, data, value) => {
     if (role === 'student') {
       setCode(value);
       socketRef.current.emit('codeChange', { code: value });
-      setShowSmiley(value.trim() === solution.trim());
+      if (value && solution) {
+        setShowSmiley(value.trim() === solution.trim());
+      } else {
+        setShowSmiley(false);
+      }
     }
   };
 
