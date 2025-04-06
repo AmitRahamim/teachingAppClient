@@ -7,11 +7,13 @@ import '../App.css';
 const Lobby = () => {
   const [codeBlocks, setCodeBlocks] = useState([]);
 
+  const serverUrl = process.env.SERVER_URL || 'http://localhost:5001';
+
   useEffect(() => {
-    axios.get('http://localhost:5001/api/codeblocks')
+    axios.get(`${serverUrl}/api/codeblocks`)
       .then(response => setCodeBlocks(response.data))
       .catch(err => console.error(err));
-  }, []);
+  }, [serverUrl]);
 
   return (
     <div className="container">
