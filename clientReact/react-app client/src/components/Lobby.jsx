@@ -7,14 +7,16 @@ import '../App.css';
 const Lobby = () => {
   const [codeBlocks, setCodeBlocks] = useState([]);
 
-  const serverUrl = 'teachingappserver-production-c351.up.railway.app';
+  const serverUrl = 'https://teachingappserver-production-c351.up.railway.app';
 
   useEffect(() => {
     axios.get(`${serverUrl}/api/codeblocks`)
-      .then(response => setCodeBlocks(response.data))
+      .then(response => {
+        console.log(response.data); // Log the response to verify it's an array
+        setCodeBlocks(response.data);
+      })
       .catch(err => console.error(err));
   }, [serverUrl]);
-
   return (
     <div className="container">
       <div class="header-div">
