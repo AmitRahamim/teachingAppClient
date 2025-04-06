@@ -23,7 +23,7 @@ const CodeBlock = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState('');
 
-  const serverUrl = process.env.SERVER_URL || 'http://localhost:5001';
+  const serverUrl = 'teachingappserver-production-c351.up.railway.app';
   // Fetch code block details (including the solution)
   useEffect(() => {
     axios.get(`${serverUrl}/api/codeblocks/${id}`)
