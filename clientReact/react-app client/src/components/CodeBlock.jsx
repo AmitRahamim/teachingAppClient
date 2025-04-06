@@ -23,9 +23,10 @@ const CodeBlock = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState('');
 
+  const serverUrl = process.env.SERVER_URL || 'http://localhost:5001';
   // Fetch code block details (including the solution)
   useEffect(() => {
-    axios.get(`http://localhost:5001/api/codeblocks/${id}`)
+    axios.get(`${serverUrl}/api/codeblocks/${id}`)
       .then(response => {
         const { initialTemplate, solution } = response.data;
         setCode(initialTemplate);
@@ -36,7 +37,7 @@ const CodeBlock = () => {
 
   // Set up socket connection and event listeners
   useEffect(() => {
-    socketRef.current = io('http://localhost:5001');
+    socketRef.current = io(`${serverUrl}`);
     socketRef.current.emit('joinRoom', { roomId: id });
 
     socketRef.current.on('roleAssigned', ({ role, userName }) => {
